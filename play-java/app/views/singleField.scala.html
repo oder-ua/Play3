@@ -1,0 +1,55 @@
+@(sfield: models.fieldClasses.ResponseField)
+@sfield.getFieldType().toString() match {
+case "SINGLELINETEXT" => {
+<div class="form-group" xmlns="http://www.w3.org/1999/html">
+    <label>@(sfield.getNameField + (if(sfield.getReqirency == true) "*:" else ":"))</label>
+    <input type="text" class="form-control" name="@sfield.getFieldID" @if(sfield.getReqirency==true){required="true"}>
+</div>
+}
+case "TEXTAREA" => {
+<div class="form-group">
+    <label>@(sfield.getNameField + (if(sfield.getReqirency == true) "*:" else ":"))</label>
+    <textarea type="textarea" class="form-control" rows="5" name="@sfield.getFieldID" @if(sfield.getReqirency==true){required="true"}></textarea>
+</div>
+}
+case "RADIOBUTTON" => {
+<div class="form-group">
+    <label>@(sfield.getNameField + (if(sfield.getReqirency == true) "*:" else ":"))</label>
+    <div style="margin-left: 15pt">
+    @for(rboption <- sfield.asInstanceOf[models.fieldClasses.RadioButton].getRbOptions()){
+        <label class="radio-inline"><input type="radio" name="@sfield.getFieldID" value="@rboption" @if(sfield.getReqirency==true){required="true"}>@rboption</label>
+    }
+    </div>
+</div>
+}
+case "COMBOBOX" => {
+<div class="form-group">
+    <label>@(sfield.getNameField + (if(sfield.getReqirency == true) "*:" else ":"))</label>
+    <select class="form-control" name="@sfield.getFieldID" @if(sfield.getReqirency==true){required="true"}>
+        @for(option <- sfield.asInstanceOf[models.fieldClasses.Combobox].getComboboxOptions()){
+            <option>@option</option>
+        }
+    </select>
+</div>
+}
+case "DATE" => {
+<div class="form-group">
+    <label>@(sfield.getNameField + (if(sfield.getReqirency == true) "*:" else ":"))</label>
+    <div class="input-group date" id="@sfield.getFieldID">
+        <input type="text" placeholder="Select date" readonly class="form-control" name="@sfield.getFieldID" @if(sfield.getReqirency==true){required="true"}/>
+        <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+        </span>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#@sfield.getFieldID').datetimepicker({pickTime:false,language: 'ru'});
+    });
+</script>
+}
+case "SLIDER" => {
+@sliders(sfield.asInstanceOf[models.fieldClasses.Slider])
+}
+case _ => {}
+}

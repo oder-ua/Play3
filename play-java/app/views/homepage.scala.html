@@ -1,0 +1,20 @@
+@()
+@general("Home"){ }{
+<h1 align="center">Welcome to data-collector!</h1>
+    <div class="container">
+        <form>
+            <div class="form-group col-xs-6">
+                <label for="login">Login:</label>
+                <input type="text" class="form-control" placeholder="Enter your login" id="login" name="login">
+            </div>
+            <div class="form-group col-xs-6">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" placeholder="Enter your password" id="password" name="password">
+            </div>
+            <div class="form-group col-xs-12">
+                <button type="submit" class="btn btn-default" style="border: solid black" formmethod="post" formaction="@routes.AdminController.adminAuth()">Enter as admin</button>
+                <button type="submit" class="btn btn-default col-xs-offset-1" style="border: solid black" formmethod="get" formaction="@routes.ResponsesController.createUserResponse()">Enter as guest</button>
+            </div>
+        </form>
+    </div>
+}

@@ -1,0 +1,15 @@
+@(slidergen: models.fieldClasses.Slider)
+<div class="form-group" style="margin-top: 25pt">
+  <label style="padding-right: 15pt">@(slidergen.getNameField + (if(slidergen.getReqirency == true) "*:" else ":"))</label>
+  <input id="@{slidergen.getFieldID}" @if(slidergen.getReqirency==true){required="true"}
+  type="text" name="@slidergen.getFieldID"
+  data-slider-min = "@slidergen.getMinValue"
+  data-slider-max = "@slidergen.getMaxValue"
+  data-slider-step = "@slidergen.getStep"
+  data-slider-value = "@slidergen.getCurrentValue"
+  value="@slidergen.getCurrentValue"/>
+    <script type="text/javascript">
+        var slider = "#@slidergen.getFieldID";
+        $(slider).slider({tooltip: 'always'});
+    </script>
+</div>

@@ -1,0 +1,88 @@
+@(responseexample: models.responseClasses.UserResponse)(userresponses: List[models.responseClasses.UserResponse])
+
+@general("Responses"){<script src = "@routes.Assets.at("javascripts/jquery-3.1.1.min.js")"></script>}{
+<div class="container">
+    <div class="nav navbar-nav col-xs-12" style="margin-top: 5pt">
+        <div class="col-xs-2">
+            <form>
+                <button type="submit" id="fieldsLink" class="btn btn-link" style="outline: none" formmethod="get" formaction="/fields">Fields</button>
+            </form>
+        </div>
+        <div class="col-xs-2">
+            <a class="btn btn-link" id="responsesLink" style="cursor: default" disabled>Responses</a>
+        </div>
+        <div class="col-xs-2 col-xs-offset-6" align="right">
+            <form>
+                <button type="submit" style="border: solid black" class="btn btn-default" formmethod="post" formaction="/out">Logout</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div style="border: solid black;margin-top: 5pt"></div>
+<div class="container" style="margin-top: 15pt">
+    <table class="table-bordered table-hover table-responsive col-xs-12" id="responsesTable">
+        <thead class="text-left">
+            @for(singleresponse <- responseexample.getResponsesList){
+                <th>@singleresponse.getFeild.getNameField</th>
+            }
+        </thead>
+        <tbody align="left">
+            @for(usresponse <- userresponses){
+                <tr>
+                @for(singlresponse <- usresponse.getResponsesList){
+                    <td>@singlresponse.getValues.toString</td>
+                }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+    <script>
+            function extractor(a){
+                var b=a;
+                return{
+                    getType:function(c){
+                        var d=b.slice(0,b.indexOf(":"));
+                        return d
+                    },
+                    getValue:function(c){
+                        var d=b.slice(b.indexOf(":")+1,b.length);
+                        return d
+                    }
+                }
+            }
+            $(function(){
+                var serverURL = 'ws://' + window.location.host + '@routes.FieldController.fieldsWebSocket().url';
+                var socket;
+                if(window.MozWebSocket){
+                    socket = new MozWebSocket(serverURL);
+                }else if(window.WebSocket){
+                    socket = new WebSocket(serverURL);
+                }
+                socket.onopen = function (event) {
+                    socket.send("new connection");
+                }
+                socket.onmessage = function (event) {
+                    if(extractor(event.data).getType()=='fields count'){
+                        addFieldsCount(extractor(event.data).getValue())
+                    } else if(extractor(event.data).getType()=='responses count'){
+                        addResponsesCount(extractor(event.data).getValue())
+                    }else if(extractor(event.data).getType()=='new response'){
+                        addResponseRow(extractor(event.data).getValue())
+                    }
+                }
+                socket.onerror = function (error) {
+                    console.error("WebSocket error: "+error);
+                }
+                function addFieldsCount(some_message) {
+                    $('#fieldsLink').text('Fields('+some_message+')');
+                }
+                function addResponsesCount(some_message){
+                    $('#responsesLink').text('Responses('+some_message+')');
+                }
+                function addResponseRow(some_message){
+                    $('#responsesTable').find('tbody').append(decodeURIComponent(some_message));
+                }
+            })
+    </script>
+}

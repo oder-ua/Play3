@@ -1,0 +1,20 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.AdminController.index()
+
+# Map static resources from the /public folder to the /assets URL path
+POST    /auth                       controllers.AdminController.adminAuth()
+GET     /fields                     controllers.FieldController.showAllFields()
+POST    /showf/:command             controllers.FieldController.showField(command: String)
+POST    /field                      controllers.FieldController.addField()
+POST    /edit(:id)                  controllers.FieldController.editField(id: Int)
+POST    /delete(:id)                controllers.FieldController.deleteField(id: Int)
+POST    /out                        controllers.AdminController.logout()
+GET     /responses                  controllers.ResponsesController.showAllResponses()
+POST    /response                   controllers.ResponsesController.addUserResponse()
+GET     /newresp                    controllers.ResponsesController.createUserResponse()
+GET     /fieldssocket               controllers.FieldController.fieldsWebSocket()
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
